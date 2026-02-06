@@ -1,4 +1,5 @@
 import os
+os.environ['SCIPY_ARRAY_API'] = '1'
 import warnings
 import numpy as np
 import pandas as pd
