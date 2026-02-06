@@ -74,8 +74,9 @@ def run_eda(filepath='data/creditcard.csv'):
     top_4 = corr_with_class.nlargest(4).index.tolist()
     fig, axes = plt.subplots(1, 4, figsize=(16, 4))
     for i, feat in enumerate(top_4):
-        sns.boxplot(data=df, x='Class', y=feat, ax=axes[i],
-                    palette=['steelblue', 'indianred'])
+        sns.boxplot(data=df, x='Class', y=feat, hue='Class', ax=axes[i],
+                    palette={0: 'steelblue', 1: 'indianred'}, legend=False)
+        axes[i].set_xticks([0, 1])
         axes[i].set_xticklabels(['Legit', 'Fraud'])
         axes[i].set_title(feat)
     plt.tight_layout()
