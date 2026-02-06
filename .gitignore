@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.egg-info/
+.venv/
+venv/
+data/*.csv
+figures/*.png
+.ipynb_checkpoints/
+.vscode/
