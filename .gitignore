@@ -6,5 +6,6 @@ __pycache__/
 venv/
 data/*.csv
 figures/*.png
+models/*.pkl
 .ipynb_checkpoints/
 .vscode/

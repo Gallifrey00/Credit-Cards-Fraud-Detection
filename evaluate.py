@@ -7,6 +7,8 @@ from sklearn.metrics import (
     average_precision_score
 )
 
+plt.style.use('seaborn-v0_8-whitegrid')
+
 
 def plot_confusion_matrix(y_true, y_pred, title='', save_path=None):
     cm = confusion_matrix(y_true, y_pred)
@@ -24,7 +26,6 @@ def plot_confusion_matrix(y_true, y_pred, title='', save_path=None):
 
 
 def plot_pr_curves(y_true, scores_dict, save_path=None):
-    """scores_dict: {model_name: y_score_array}"""
     fig, ax = plt.subplots(figsize=(8, 6))
     for name, y_score in scores_dict.items():
         prec, rec, _ = precision_recall_curve(y_true, y_score)
@@ -76,6 +77,32 @@ def plot_feature_importance(model, feature_names, top_n=15, save_path=None):
     ax.set_yticklabels([feature_names[i] for i in idx])
     ax.set_xlabel('Importance')
     ax.set_title('Feature Importance')
+    plt.tight_layout()
+    if save_path:
+        fig.savefig(save_path, dpi=150)
+    plt.close()
+
+
+def plot_threshold_analysis(y_true, y_scores, model_name, save_path=None):
+    prec, rec, thresholds = precision_recall_curve(y_true, y_scores)
+    f1 = np.where((prec + rec) == 0, 0, 2 * prec * rec / (prec + rec))
+
+    # drop the last point (precision_recall_curve adds an extra one)
+    fig, ax = plt.subplots(figsize=(9, 5))
+    ax.plot(thresholds, prec[:-1], label='Precision', linewidth=2)
+    ax.plot(thresholds, rec[:-1], label='Recall', linewidth=2)
+    ax.plot(thresholds, f1[:-1], label='F1', linewidth=2, linestyle='--')
+
+    best_idx = np.argmax(f1[:-1])
+    best_t = thresholds[best_idx]
+    ax.axvline(best_t, color='gray', linestyle=':', alpha=0.7,
+               label=f'Best threshold ({best_t:.3f})')
+
+    ax.set_xlabel('Threshold')
+    ax.set_ylabel('Score')
+    ax.set_title(f'Threshold Analysis — {model_name}')
+    ax.legend(loc='best')
+    ax.set_xlim([0, 1])
     plt.tight_layout()
     if save_path:
         fig.savefig(save_path, dpi=150)
